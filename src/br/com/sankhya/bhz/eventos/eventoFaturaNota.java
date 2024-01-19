@@ -1,5 +1,6 @@
 package br.com.sankhya.bhz.eventos;
 
+
 import br.com.sankhya.bhz.utils.AcessoBanco;
 import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;
@@ -11,6 +12,7 @@ import br.com.sankhya.bhz.utils.Utilitarios;
 import com.sankhya.util.BigDecimalUtil;
 
 import java.math.BigDecimal;
+import java.math.MathContext;
 import java.util.Collection;
 
 public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
@@ -31,17 +33,20 @@ public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
             try {
                 acessobanco.openSession();
                 preco = acessobanco.findOne("SELECT SNK_PRECO(0,?) AS PRECO FROM DUAL",iteVO.asBigDecimalOrZero("CODPROD")).getBigDecimal("PRECO");
-            }finally {
-                acessobanco.closeSession();
-            }
-            vlrunit = (preco.multiply(percentual)).divide(new BigDecimal(100));
-            vlrtot = vlrunit.multiply(iteVO.asBigDecimalOrZero("QTDNEG"));
+                vlrunit = ((preco.multiply(percentual)).divide(new BigDecimal(100))).round(new MathContext(3));
+                vlrtot = vlrunit.multiply(iteVO.asBigDecimalOrZero("QTDNEG"));
                 iteDAO.prepareToUpdate(iteVO)
                         .set("VLRUNIT",vlrunit)
                         .set("VLRTOT",vlrtot)
+                        .set("PERCDESC",BigDecimal.ZERO)
+                        .set("VLRDESC",BigDecimal.ZERO)
                         .update();
 
-            Utilitarios.recalculaImpostosNota(nunota);
+
+            }finally {
+                acessobanco.closeSession();
+            }
+
         }
     }
 
@@ -69,11 +74,25 @@ public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
         String tipmov = cabVO.asString("TIPMOV");
         if("V".equals(tipmov)) {
             atualizaFaturamento(nunota, sequencia);
+            Utilitarios.recalculaImpostosNota(nunota);
+            Utilitarios.refazerFinanceiro(nunota);
         }
     }
 
     @Override
     public void afterUpdate(PersistenceEvent persistenceEvent) throws Exception {
+
+            DynamicVO vo = (DynamicVO) persistenceEvent.getVo();
+            BigDecimal nunota = vo.asBigDecimalOrZero("NUNOTA");
+            BigDecimal sequencia = vo.asBigDecimalOrZero("SEQUENCIA");
+            DynamicVO cabVO = cabDAO.findByPK(nunota);
+            String tipmov = cabVO.asString("TIPMOV");
+            if("V".equals(tipmov)) {
+                atualizaFaturamento(nunota, sequencia);
+                //Utilitarios.recalculaImpostosNota(nunota);
+                Utilitarios.refazerFinanceiro(nunota);
+            }
+
 
     }
 
