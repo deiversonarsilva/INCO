@@ -1,10 +1,13 @@
 package br.com.sankhya.bhz.utils;
 
+import br.com.sankhya.jape.util.JapeSessionContext;
 import br.com.sankhya.modelcore.auth.AuthenticationInfo;
 import br.com.sankhya.modelcore.comercial.BarramentoRegra;
+import br.com.sankhya.modelcore.comercial.CentralFinanceiro;
 import br.com.sankhya.modelcore.comercial.LiberacaoSolicitada;
 import br.com.sankhya.modelcore.comercial.centrais.CACHelper;
 import br.com.sankhya.modelcore.comercial.impostos.ImpostosHelpper;
+import kotlin.jvm.internal.Intrinsics;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
@@ -66,6 +69,16 @@ public class Utilitarios {
 
         }
         System.out.println(toResult);
+    }
+    public static void refazerFinanceiro(BigDecimal nuNota) throws Exception {
+        //Intrinsics.checkParameterIsNotNull(nuNota, "nuNota");
+        JapeSessionContext.putProperty("br.com.sankhya.com.CentralCompraVenda", Boolean.TRUE);
+        JapeSessionContext.putProperty("br.com.sankhya.com.CentralCompraVenda", Boolean.TRUE);
+        JapeSessionContext.putProperty("ItemNota.incluindo.alterando.pela.central", Boolean.TRUE);
+        JapeSessionContext.putProperty("calcular.outros.impostos", "false");
+        CentralFinanceiro financeiro = new CentralFinanceiro();
+        financeiro.inicializaNota(nuNota);
+        financeiro.refazerFinanceiro();
     }
 
 

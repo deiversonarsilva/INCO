@@ -16,5 +16,6 @@
     <orderEntry type="library" name="libs" level="application" />
     <orderEntry type="library" name="Sankhya_4" level="application" />
     <orderEntry type="library" name="SankhyaW-extensions" level="application" />
+    <orderEntry type="library" name="BHBiblioteca-model" level="application" />
   </component>
 </module>
