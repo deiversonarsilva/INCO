@@ -1,0 +1,8 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="inco">
+    <output-path>$PROJECT_DIR$/out/inco</output-path>
+    <root id="archive" name="inco.jar">
+      <element id="module-output" name="INCO" />
+    </root>
+  </artifact>
+</component>
