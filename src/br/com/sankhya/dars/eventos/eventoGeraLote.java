@@ -1,21 +1,14 @@
-package br.com.sankhya.bhz.eventos;
+package br.com.sankhya.dars.eventos;
 
-import br.com.sankhya.bhz.utils.AcessoBanco;
+import br.com.sankhya.dars.utils.AcessoBanco;
 import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;
 import br.com.sankhya.jape.event.TransactionContext;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
-import com.sankhya.util.BigDecimalUtil;
-import com.sankhya.util.StringUtils;
-import com.sankhya.util.TimeUtils;
-import sun.awt.image.BufferedImageGraphicsConfig;
 
 import java.math.BigDecimal;
-
-import java.sql.Timestamp;
-import java.util.Collection;
 
 public class eventoGeraLote implements EventoProgramavelJava {//TGFITE
 

@@ -1,6 +1,5 @@
-package br.com.sankhya.bhz.eventos;
+package br.com.sankhya.dars.eventos;
 
-import br.com.sankhya.bhz.utils.ErroUtils;
 import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;
 import br.com.sankhya.jape.event.TransactionContext;

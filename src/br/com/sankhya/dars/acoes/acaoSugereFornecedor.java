@@ -1,6 +1,5 @@
-package br.com.sankhya.bhz.acoes;
+package br.com.sankhya.dars.acoes;
 
-import br.com.sankhya.bhz.utils.ErroUtils;
 import br.com.sankhya.extensions.actionbutton.AcaoRotinaJava;
 import br.com.sankhya.extensions.actionbutton.ContextoAcao;
 import br.com.sankhya.extensions.actionbutton.Registro;

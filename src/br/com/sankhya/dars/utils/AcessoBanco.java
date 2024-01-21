@@ -1,4 +1,4 @@
-package br.com.sankhya.bhz.utils;
+package br.com.sankhya.dars.utils;
 
 import br.com.sankhya.jape.EntityFacade;
 import br.com.sankhya.jape.dao.JdbcWrapper;

@@ -1,10 +1,9 @@
-package br.com.sankhya.bhz.acoes;
+package br.com.sankhya.dars.acoes;
 
-import br.com.sankhya.bhz.utils.AcessoBanco;
+import br.com.sankhya.dars.utils.AcessoBanco;
 import br.com.sankhya.extensions.actionbutton.AcaoRotinaJava;
 import br.com.sankhya.extensions.actionbutton.ContextoAcao;
 import br.com.sankhya.jape.dao.JdbcWrapper;
-import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.modelcore.util.EntityFacadeFactory;
 
 import java.math.BigDecimal;

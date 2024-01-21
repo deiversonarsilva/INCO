@@ -1,19 +1,18 @@
-package br.com.sankhya.bhz.eventos;
+package br.com.sankhya.dars.eventos;
 
 
-import br.com.sankhya.bhz.utils.AcessoBanco;
+import br.com.sankhya.dars.utils.AcessoBanco;
 import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;
 import br.com.sankhya.jape.event.TransactionContext;
 import br.com.sankhya.jape.vo.DynamicVO;
 import br.com.sankhya.jape.wrapper.JapeFactory;
 import br.com.sankhya.jape.wrapper.JapeWrapper;
-import br.com.sankhya.bhz.utils.Utilitarios;
+import br.com.sankhya.dars.utils.Utilitarios;
 import com.sankhya.util.BigDecimalUtil;
 
 import java.math.BigDecimal;
 import java.math.MathContext;
-import java.util.Collection;
 
 public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
     JapeWrapper cabDAO = JapeFactory.dao("CabecalhoNota");
@@ -71,11 +70,14 @@ public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
         BigDecimal nunota = vo.asBigDecimalOrZero("NUNOTA");
         BigDecimal sequencia = vo.asBigDecimalOrZero("SEQUENCIA");
         DynamicVO cabVO = cabDAO.findByPK(nunota);
+        BigDecimal codtipoper = cabVO.asBigDecimalOrZero("CODTIPOPER");
         String tipmov = cabVO.asString("TIPMOV");
         if("V".equals(tipmov)) {
             atualizaFaturamento(nunota, sequencia);
-            Utilitarios.recalculaImpostosNota(nunota);
-            Utilitarios.refazerFinanceiro(nunota);
+            if(codtipoper.compareTo(new BigDecimal(1150))!=0) {
+                Utilitarios.recalculaImpostosNota(nunota);
+                Utilitarios.refazerFinanceiro(nunota);
+            }
         }
     }
 
