@@ -2,6 +2,7 @@ package br.com.sankhya.dars.eventos;
 
 
 import br.com.sankhya.dars.utils.AcessoBanco;
+import br.com.sankhya.dars.utils.ErroUtils;
 import br.com.sankhya.extensions.eventoprogramavel.EventoProgramavelJava;
 import br.com.sankhya.jape.event.PersistenceEvent;
 import br.com.sankhya.jape.event.TransactionContext;
@@ -49,8 +50,28 @@ public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
         }
     }
 
-    @Override
+    public void atualizaTotalNota(BigDecimal nunota) throws Exception {
+        DynamicVO notaVO = cabDAO.findByPK(nunota);
+        DynamicVO topVO = topDAO.findOne("CODTIPOPER=? AND DHALTER=? AND AD_ATUALFATUR='S'", notaVO.asBigDecimalOrZero("CODTIPOPER"), notaVO.asTimestamp("DHTIPOPER"));
+        if(topVO != null){
+            AcessoBanco acessobanco = new AcessoBanco();
+            try{
+                acessobanco.openSession();
+                BigDecimal total = acessobanco.findOne("SELECT SUM(VLRTOT+VLRSUBST) AS SOMA FROM TGFITE WHERE NUNOTA=?",nunota).getBigDecimal("SOMA");
+                BigDecimal vlrnota = notaVO.asBigDecimalOrZero("VLRNOTA");
+                if(total.compareTo(vlrnota)!=0) {
+                    acessobanco.update("UPDATE TGFCAB SET VLRNOTA=? WHERE NUNOTA=?", total, nunota);
+                    Utilitarios.recalculaImpostosNota(nunota);
+                }
+            }finally {
+                acessobanco.closeSession();
+            }
+        }
+    }
+
+        @Override
     public void beforeInsert(PersistenceEvent persistenceEvent) throws Exception {
+
 
     }
 
@@ -74,6 +95,7 @@ public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
         String tipmov = cabVO.asString("TIPMOV");
         if("V".equals(tipmov)) {
             atualizaFaturamento(nunota, sequencia);
+            atualizaTotalNota(nunota);
             if(codtipoper.compareTo(new BigDecimal(1150))!=0) {
                 Utilitarios.recalculaImpostosNota(nunota);
                 Utilitarios.refazerFinanceiro(nunota);
@@ -91,6 +113,8 @@ public class eventoFaturaNota implements EventoProgramavelJava { //TGFITE
             String tipmov = cabVO.asString("TIPMOV");
             if("V".equals(tipmov)) {
                 atualizaFaturamento(nunota, sequencia);
+
+                atualizaTotalNota(nunota);
                 //Utilitarios.recalculaImpostosNota(nunota);
                 Utilitarios.refazerFinanceiro(nunota);
             }
